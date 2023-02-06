@@ -1,0 +1,2 @@
+MAILTO=cecil.coupe@gmail.com
+00 00,06,12,18 * * * /usr/local/lib/pspings/pspings.sh >>/dev/nul 2>&1

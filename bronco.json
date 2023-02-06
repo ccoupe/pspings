@@ -1,0 +1,17 @@
+{ "mqtt_server_ip": "stoic.local",
+  "mqtt_port": 1883,
+  "mqtt_client_name": "Bronco pspings",
+  "node": "bronco",
+  "email": "cecil.coupe@gmail.com",
+  "smtp_svr": "192.168.1.2",
+  "smtp_port": 25,
+  "check_mqtt": true,
+  "processes": [
+    {"name": "shape_server.py", "running": false},
+    {"name": "mlface.py", "running": false},
+    {"name": "zmq_tracker.py", "running": false},
+    {"name": "alarm.py", "running": false},
+    {"name": "motion.py", "running": false},
+    {"name": "/usr/sbin/lighttpd", "running": false}
+  ]
+}
