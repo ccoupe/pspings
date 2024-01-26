@@ -7,11 +7,31 @@
   "smtp_port": 25,
   "check_mqtt": true,
   "processes": [
-    {"name": "shape_server.py", "running": false},
-    {"name": "mlface.py", "running": false},
-    {"name": "zmq_tracker.py", "running": false},
+    {"name": "restart-node.py", "running": false},
+    {"name": "/lib/nut/upsmon", "running": false},
     {"name": "alarm.py", "running": false},
     {"name": "motion.py", "running": false},
+    {"name": "mqttups.py", "running": false},
+    {"name": "/usr/bin/dockerd", "running": false},
     {"name": "/usr/sbin/lighttpd", "running": false}
-  ]
+  ],
+  "dockers": [
+	{"name": "heimdall", "running": false},
+  {"name": "mlshapes", "running": false},
+	{"name": "mlface", "running": false},
+	{"name": "zmqtracker", "running": false},
+	{"name": "chrome-heimdall", "running": false},
+	{"name": "ggml-gpt4all-j-v1.3-groovy", "running": false},
+	{"name": "glados-tts", "running": false},
+	{"name": "glados-stt", "running": false}
+  ],
+  "nfs": [
+    {"name": "terra.local:/Volume1/backups/stoic_space/media", "running": false},
+    {"name": "terra.local:/Volume1/archives", "running": false},
+    {"name": "stoic.local:/mnt/stoic_space", "runngin": false}
+  ],
+  "pinglist": ["stoic.local","mini.local","terra.local", "trumpy4.local",
+        "kodi.local", "pi4.local", "octopi.local", "octoprinty.local",
+        "mono.local", "pinoir.local", "pi0fr.local", "hubitat.local",
+        "oldpaint.local"]
 }

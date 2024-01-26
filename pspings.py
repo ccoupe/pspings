@@ -1,9 +1,6 @@
 import paho.mqtt.client as mqtt
 import json
-import time
-import json
 import argparse
-import warnings
 import sys
 import subprocess
 from lib.Settings import Settings
@@ -17,7 +14,7 @@ def on_connect(client, userdata, flags, rc):
     print("Connection returned result: "+mqtt.connack_string(rc))
 
 def initialise_mqtt_clients(cname):
-    client= mqtt.Client(cname,False) #don't use clean session
+    client = mqtt.Client(cname,False) #don't use clean session
     client.on_connect= on_connect        #attach function to callback
     #client.on_message=on_message        #attach function to callback
     client.topic_ack=[]
@@ -97,7 +94,48 @@ def main(argList=None):
   for sts in settings.processes:
     if not sts['running']:
       errlns.append(f"{settings.node} is missing {sts['name']}")
-  
+      
+  # docker containers will be similar except that there is odd 
+  # string quoting cruft to deal with 
+  if settings.dockers is not None:
+    cmd = ["docker", "ps", "--format", "'{{.Names }} {{.State}}'"]
+    proc_lines = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    for line in proc_lines.stdout.readlines():
+      ln = str(line.strip())
+      flds = ln.split(' ')
+      for proc in settings.dockers:
+        if flds[0][3:] == proc['name'] and flds[1][0:-2] == 'running':
+          proc['running'] = True
+          #print('matched:',flds[0][3:],flds[1][0:-2])
+          break
+      else:
+        print('unmatched:',flds[0][3:])
+        
+    for sts in settings.dockers:
+      if not sts['running']:
+        print('Failed', sts)
+        errlns.append(f"{settings.node} is missing {sts['name']}")
+        
+  if settings.nfs is not None:
+    cmd = ["findmnt", "-o", "source", "-t", "nfs,nfs4"]
+    cmdout = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    for line in cmdout.stdout.readlines():
+      #ln = str(line).strip()
+      mnt = line[0:-1].decode('utf-8')
+      if mnt == 'SOURCE':
+        continue
+      #print('have', mnt)
+      for m in settings.nfs:
+        if m['name'] == mnt:
+          m['running'] = True
+          break
+      
+    for sts in settings.nfs:
+      if not sts['running']:
+        print('not mounted', sts)
+        errlns.append(f"{sts['name']} is not mounted")
+
+ 
   # always publish to mqtt - the reciever can figure out
   if len(errlns) <= 0:
     client.publish("network/processes", f'["{settings.node} is OK"]')
@@ -111,5 +149,3 @@ def main(argList=None):
     
 if __name__ == '__main__':
   sys.exit(main())
-
-   

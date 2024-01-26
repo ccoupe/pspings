@@ -47,6 +47,8 @@ class Settings:
     self.email = conf.get("email", None)
     self.node = conf.get("node", None)
     self.processes = conf.get("processes", None)
+    self.dockers = conf.get("dockers", None)
+    self.nfs = conf.get("nfs", None)
     self.smtp_svr = conf.get("smtp_svr", "cecil.coupe@gmail.com")
     self.smtp_port = conf.get("smtp_port", 25)
 
